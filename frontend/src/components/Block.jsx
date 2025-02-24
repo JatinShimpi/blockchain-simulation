@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const Block = ({ block, onUpdate, isInvalid }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -11,39 +11,72 @@ const Block = ({ block, onUpdate, isInvalid }) => {
 
   return (
     <div
-      className={`border p-4 rounded-lg shadow-md w-64 transition-all duration-300
-        ${isInvalid ? "bg-red-500 border-red-700 text-white" : "bg-gray-800 border-gray-600 text-gray-300"}`}
+      className={`rounded-lg p-6 transition-all duration-300 transform hover:scale-105 shadow-xl
+        ${
+          isInvalid
+            ? "bg-red-900/20 border-2 border-red-700"
+            : "bg-gray-800 border border-gray-700"
+        }`}
     >
-      <h3 className="text-lg font-bold text-blue-400 mb-2">Block #{block.index}</h3>
-      <div className="space-y-2">
-        <p className="text-sm"><b>Nonce:</b> {block.nonce}</p>
-        {isEditing ? (
-          <textarea
-            value={newData}
-            onChange={(e) => setNewData(e.target.value)}
-            className="w-full bg-gray-700 text-white p-1 rounded"
-          />
-        ) : (
-          <p className="text-sm"><b>Data:</b> {block.data || "None"}</p>
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-bold text-blue-400">
+          Block #{block.index}
+        </h3>
+        {isInvalid && (
+          <span className="text-red-400 text-sm">Invalid Block</span>
         )}
-        <p className="text-sm break-words"><b>Prev Hash:</b> {block.previousHash.substring(0, 20)}...</p>
-        <p className="text-sm break-words"><b>Hash:</b> {block.hash.substring(0, 20)}...</p>
       </div>
-      {isEditing ? (
+
+      <div className="space-y-4">
+        <div className="space-y-1">
+          <label className="text-sm text-gray-400">Nonce</label>
+          <div className="font-mono text-white bg-gray-700/50 rounded p-2">
+            {block.nonce}
+          </div>
+        </div>
+
+        <div className="space-y-1">
+          <label className="text-sm text-gray-400">Data</label>
+          {isEditing ? (
+            <textarea
+              value={newData}
+              onChange={(e) => setNewData(e.target.value)}
+              className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white font-mono focus:outline-none focus:border-blue-500"
+              rows="2"
+            />
+          ) : (
+            <div className="font-mono text-white bg-gray-700/50 rounded p-2 break-all">
+              {block.data || "None"}
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-1">
+          <label className="text-sm text-gray-400">Previous Hash</label>
+          <div className="font-mono text-xs text-gray-300 bg-gray-700/50 rounded p-2 truncate">
+            {block.previousHash}
+          </div>
+        </div>
+
+        <div className="space-y-1">
+          <label className="text-sm text-gray-400">Hash</label>
+          <div className="font-mono text-xs text-gray-300 bg-gray-700/50 rounded p-2 truncate">
+            {block.hash}
+          </div>
+        </div>
+
         <button
-          onClick={handleUpdate}
-          className="mt-2 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+          onClick={isEditing ? handleUpdate : () => setIsEditing(true)}
+          className={`w-full py-2 px-4 rounded transition-colors duration-200 flex items-center justify-center space-x-2
+            ${
+              isEditing
+                ? "bg-green-600 hover:bg-green-700 text-white"
+                : "bg-gray-700 hover:bg-gray-600 text-white"
+            }`}
         >
-          Save
+          <span>{isEditing ? "✓ Save" : "✎ Edit"}</span>
         </button>
-      ) : (
-        <button
-          onClick={() => setIsEditing(true)}
-          className="mt-2 bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-        >
-          Edit
-        </button>
-      )}
+      </div>
     </div>
   );
 };
